@@ -79,7 +79,6 @@ class LocalProvider:
         self.chats.store_in_chat(id, "user", chat.input)
         self.chats.store_in_chat(id, response.get("role", "assistant"), response.get("content", ""))
 
-
     def search_for(self, query: Chat) -> str:
         request = self.__req_dic(query.input, query.chat_id)
         response = r.post(f"{self.conn_string}/v1/chat/completions", json=request)

@@ -4,7 +4,11 @@ from pydantic import BaseModel
 
 
 class Chat(BaseModel):
+    #Works as an identifier to the datastore that the user wants to use for this particular chat
+    store: Optional[str] = None
+    #ID for chat history
     chat_id: Optional[str] = None
+    #User input
     input: str
 
 class ChatRepository(Protocol):
