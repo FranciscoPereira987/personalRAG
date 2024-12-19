@@ -2,6 +2,7 @@ import requests as r
 from typing import Any, Optional, Protocol
 
 from src.model.chat import Chat, ChatRepository, LocalRepository
+from src.model.embed import Embedder, LocalEmbedder
 
 class LLMProvider(Protocol):
     
@@ -42,9 +43,9 @@ class LocalProvider:
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.base_prompt = base_prompt
-        self.embed_model = embed_model
         self.chats: ChatRepository = LocalRepository()
-    
+        self.embedder: Embedder = LocalEmbedder(conn="http://127.0.0.1", port=port, model=embed_model)
+
     def __base_story(self) -> list[dict[str, str]]:
         return [
                 {"role": "system", "content": self.base_prompt},
@@ -60,13 +61,6 @@ class LocalProvider:
                     "temperature": self.temperature,
                     "max_tokens": self.max_tokens,
                     "stream": False
-                }
-    
-    def __embed_dic(self, query: str) -> dict[str, Any]:
-        return {
-                    "model": self.embed_model,
-                    "input": query,
-                    "encoding_format": "float"
                 }
     
     def __update_chat(self, json_dic: dict[str, Any], chat: Chat):
@@ -86,6 +80,5 @@ class LocalProvider:
         self.__update_chat(response_json, query)
         return response_json
 
-    def embed(self, query: str) -> str:
-        response = r.post(f"{self.conn_string}/v1/embeddings", json=self.__embed_dic(query))
-        return response.json()
+    def embed(self, query: str) -> list[float]:
+        return self.embedder.embed(query)
