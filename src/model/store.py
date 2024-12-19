@@ -74,7 +74,7 @@ class ChromaLocalStore:
         
         try:
             self.db.create_collection(name=store_name)
-        except ValueError:
+        except:
             self.db.delete_collection(name=store_name)
             self.db.create_collection(name=store_name)
 
@@ -94,4 +94,4 @@ class ChromaLocalStore:
         
         col = self.db.get_collection(collection)
         matchings = col.query(embedding.pop(), n_results=10)
-        return matchings.get("documents") #type: ignore
+        return matchings.get("documents").pop() #type: ignore
