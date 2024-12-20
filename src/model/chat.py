@@ -23,6 +23,12 @@ class ChatRepository(Protocol):
         """
             Stores the user_input and response in the chat referenced by chat_id
         """
+    
+    def store_batch(self, chat_id: str, entries: list[dict[str, str]]):
+        """
+            Stores the whole list, where every entry should have a 'role' and a 'content'
+            key
+        """
 
 class LocalRepository:
 
@@ -39,4 +45,7 @@ class LocalRepository:
         if not chat:
             self.chats[chat_id] = []
         self.chats[chat_id].append({"role": role, "content": input})
- 
+    
+    def store_batch(self, chat_id: str, entries: list[dict[str, str]]):
+        for entry in entries:
+            self.store_in_chat(chat_id, entry.get("role", "unknown"), entry.get("content", ""))

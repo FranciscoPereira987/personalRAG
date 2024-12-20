@@ -5,8 +5,6 @@ from fastapi.param_functions import Body
 from pydantic import BaseModel
 from src.model.chat import Chat
 from src.model.lang import LocalProvider
-from src.model.prompt import BasicPrompt
-from src.model.store import ChromaLocalStore
 
 app = fastapi.FastAPI()
 provider = LocalProvider(store_location="/home/franciscopereira/chromadb")

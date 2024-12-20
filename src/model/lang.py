@@ -63,21 +63,21 @@ class LocalProvider:
                     "stream": False
                 }
     
-    def __update_chat(self, json_dic: dict[str, Any], chat: Chat):
+    def __update_chat(self, json_dic: dict[str, Any], req: list[dict[str, str]], chat: Chat):
         id = chat.chat_id
         if id is None:
             id = json_dic.get("id", "")
             base = self.__base_story()
             self.chats.store_in_chat(id, base[0].get("role", ""), base[0].get("content", ""))
         response: dict[str, str] = json_dic.get("choices", [])[0].get("message")
-        self.chats.store_in_chat(id, "user", chat.input)
+        self.chats.store_batch(id, req)
         self.chats.store_in_chat(id, response.get("role", "assistant"), response.get("content", ""))
 
     def search_for(self, query: Chat) -> str:
         request = self.__req_dic(query.input, query.store, query.chat_id)
         response = r.post(f"{self.conn_string}/v1/chat/completions", json=request)
         response_json = response.json()
-        self.__update_chat(response_json, query)
+        self.__update_chat(response_json, request.get("messages", [{}, {}])[-2:], query)
         return response_json
 
     def embed(self, query: str) -> list[float]:

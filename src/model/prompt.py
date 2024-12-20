@@ -4,8 +4,6 @@ from src.model.store import Store
 
 BASIC_PROMPT = "You are an assistant that answer questions based on the information that is given to you by the system"
 
-
-
 class PromptBuilder(Protocol):
     
     def generate_prompt(self, input: str, store: str, db: Store) -> list[dict[str, str]]:
@@ -36,7 +34,6 @@ class BasicPrompt:
         text = ""
         for chunk in info:
             text += f"Entry text: {chunk}\n"
-
         return text
 
     def base_prompt(self) -> dict[str, str]:

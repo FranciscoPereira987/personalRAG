@@ -73,7 +73,6 @@ class ChromaLocalStore:
         except:
             self.db.delete_collection(name=store_name)
             self.db.create_collection(name=store_name)
-
         collection = self.db.get_collection(name=store_name)
         data, embeddings = self.__embed_chunks(
                 self.__produce_blobs(
@@ -86,6 +85,7 @@ class ChromaLocalStore:
     
     def create_from_documents(self, store_name: str, files: dict[str, str]):
        pass 
+    
     def search(self, collection: str, text: str) -> list[str]:
         _, embedding = self.__embed_chunks([text])
         col = self.db.get_collection(collection)
