@@ -9,6 +9,7 @@ class Embedder(Protocol):
             returning the corresponding embeddings
         """
         return []
+
 class LocalEmbedder:
 
     def __init__(self,

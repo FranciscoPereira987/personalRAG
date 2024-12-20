@@ -3,6 +3,8 @@ from typing import Any, Optional, Protocol
 
 from src.model.chat import Chat, ChatRepository, LocalRepository
 from src.model.embed import Embedder, LocalEmbedder
+from src.model.prompt import BasicPrompt, PromptBuilder
+from src.model.store import ChromaLocalStore, Store
 
 class LLMProvider(Protocol):
     
@@ -33,28 +35,26 @@ class LocalProvider:
 
     def __init__(self,
                  port: str = "1234",
-                 base_prompt: str = "",
                  model: str = "llama-3.2-3b-instruct",
                  embed_model: str = "text-embedding-nomic-embed-text-v1.5",
                  temperature: float = 0.7,
-                 max_tokens: int = -1):
+                 max_tokens: int = -1,
+                 store_location: str = "."):
         self.conn_string = f"http://127.0.0.1:{port}"
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
-        self.base_prompt = base_prompt
         self.chats: ChatRepository = LocalRepository()
         self.embedder: Embedder = LocalEmbedder(conn="http://127.0.0.1", port=port, model=embed_model)
+        self.prompter: PromptBuilder = BasicPrompt()
+        self.db: Store = ChromaLocalStore(store_location) 
 
     def __base_story(self) -> list[dict[str, str]]:
-        return [
-                {"role": "system", "content": self.base_prompt},
-                ]
+        return [self.prompter.base_prompt()]
 
-    def __req_dic(self, query: str, chat_id: Optional[str]) -> dict[str, Any]:
-        
+    def __req_dic(self, query: str, store: str | None, chat_id: Optional[str]) -> dict[str, Any]:
         chat_story = self.chats.get_chat(chat_id) if chat_id is not None else self.__base_story()  
-        chat_story.append({"role": "user", "content": query})
+        chat_story += self.prompter.generate_prompt(query, store, self.db) if store is not None else self.prompter.generate_basic(query)
         return {
                     "model": self.model,
                     "messages": chat_story, 
@@ -74,7 +74,7 @@ class LocalProvider:
         self.chats.store_in_chat(id, response.get("role", "assistant"), response.get("content", ""))
 
     def search_for(self, query: Chat) -> str:
-        request = self.__req_dic(query.input, query.chat_id)
+        request = self.__req_dic(query.input, query.store, query.chat_id)
         response = r.post(f"{self.conn_string}/v1/chat/completions", json=request)
         response_json = response.json()
         self.__update_chat(response_json, query)
@@ -82,3 +82,6 @@ class LocalProvider:
 
     def embed(self, query: str) -> list[float]:
         return self.embedder.embed(query)
+
+    def create_store(self, store_name: str, files: list[str]):
+        self.db.create_store(store_name, files)

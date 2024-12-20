@@ -1,9 +1,6 @@
 from typing import Protocol, Tuple
-
 import chromadb
-
 from src.model.embed import Embedder, LocalEmbedder
-
 
 class Store(Protocol):
 
@@ -20,7 +17,7 @@ class Store(Protocol):
         """
         pass
 
-    def search(self, collection: str, query: str) -> list[str]:
+    def search(self, collection: str, text: str) -> list[str]:
         """
             Searches in the database based on the query and returns a list of documents
             that are closely related to the embedding
@@ -71,7 +68,6 @@ class ChromaLocalStore:
         return chunks, embeddings 
 
     def create_store(self, store_name: str, file_names: list[str]):
-        
         try:
             self.db.create_collection(name=store_name)
         except:
@@ -87,11 +83,11 @@ class ChromaLocalStore:
                     )
                 )
         collection.add(ids=list(map(lambda x: str(x), range(1, len(data)+1))), embeddings=embeddings, documents=data) #type: ignore
-         
+    
+    def create_from_documents(self, store_name: str, files: dict[str, str]):
+       pass 
     def search(self, collection: str, text: str) -> list[str]:
-
         _, embedding = self.__embed_chunks([text])
-        
         col = self.db.get_collection(collection)
         matchings = col.query(embedding.pop(), n_results=10)
         return matchings.get("documents").pop() #type: ignore
