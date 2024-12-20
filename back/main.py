@@ -56,7 +56,25 @@ def search_for(query: Annotated[Chat, Body()]):
 def start_queried_chat(dir: Annotated[ChatInitialization, Body()]):
     files = walk_directory(dir.directory)
     provider.create_store(dir.chat_name, files) 
-    
+
+@app.get("/chats")
+def query_chats():
+    """
+        Returns all chat's id stored
+    """
+    return {
+        "chats": []
+    }
+
+@app.get("/stores")
+def query_stores():
+    """
+        Returns all store's names 
+    """
+    return {
+        "stores": []
+    }
+
 @app.post("/similar")
 def search_similar(query: Annotated[CollectionQuery, Body()]):
     return provider.db.search(query.collection, query.input) 
