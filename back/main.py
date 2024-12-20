@@ -5,9 +5,19 @@ from fastapi.param_functions import Body
 from pydantic import BaseModel
 from src.model.chat import Chat
 from src.model.lang import LocalProvider
+from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi.FastAPI()
 provider = LocalProvider(store_location="/home/franciscopereira/chromadb")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+
+)
 
 class TextInput(BaseModel):
     input: str
