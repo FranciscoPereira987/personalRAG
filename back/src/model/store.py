@@ -10,7 +10,13 @@ class Store(Protocol):
             If the store is already created, it is deleted and created once more
         """
         pass
-    
+        
+    def get_collections(self) -> list[str]:
+        """
+            Returns the collections stored in memory
+        """
+        return []
+
     def create_from_documents(self, store_name: str, files: dict[str, str]):
         """
             Same as create_store, but recieves the contents of the files directly
@@ -91,3 +97,11 @@ class ChromaLocalStore:
         col = self.db.get_collection(collection)
         matchings = col.query(embedding.pop(), n_results=10)
         return matchings.get("documents").pop() #type: ignore
+
+    def get_collections(self) -> list[str]:
+        return list(
+                    map(lambda x: x.name,
+                        self.db.list_collections()
+                        )
+                    )
+         

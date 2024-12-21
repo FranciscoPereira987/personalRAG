@@ -2,13 +2,14 @@ import os
 from typing import Annotated
 import fastapi
 from fastapi.param_functions import Body
+from fastapi.params import Path
 from pydantic import BaseModel
 from src.model.chat import Chat
 from src.model.lang import LocalProvider
 from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi.FastAPI()
-provider = LocalProvider(store_location="/home/franciscopereira/chromadb")
+provider = LocalProvider(store_location="C:\\Users\\franc\\chroma\\personalRag")
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,6 +35,9 @@ class ChatInitialization(BaseModel):
     directory: str
     chat_name: str
 
+class FileInput(BaseModel):
+    name: str
+
 def walk_directory(directory: str) -> list[str]:
     """
         Walks a directory, returning all the files contained within it
@@ -58,22 +62,33 @@ def start_queried_chat(dir: Annotated[ChatInitialization, Body()]):
     provider.create_store(dir.chat_name, files) 
 
 @app.get("/chats")
-def query_chats():
+def query_chats() -> list[str]:
     """
         Returns all chat's id stored
     """
-    return {
-        "chats": []
-    }
+    return provider.get_chats() 
 
 @app.get("/stores")
-def query_stores():
+def query_stores() -> list[str]:
     """
         Returns all store's names 
     """
-    return {
-        "stores": []
-    }
+    return provider.get_collections() 
+
+@app.post("/store/{store}/directory")
+def add_directory(store: Annotated[str, Path()], dir: Annotated[FileInput, Body()]):
+    """
+        Adds all files in the given directory into the given store
+    """
+    pass
+
+@app.post("/store/{store}/file")
+def add_file(store: Annotated[str, Path()], file: Annotated[FileInput, Body()]):
+    """
+        Add the given file into the given store
+    """ 
+    pass
+
 
 @app.post("/similar")
 def search_similar(query: Annotated[CollectionQuery, Body()]):

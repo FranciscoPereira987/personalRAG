@@ -83,5 +83,11 @@ class LocalProvider:
     def embed(self, query: str) -> list[float]:
         return self.embedder.embed(query)
 
+    def get_chats(self) -> list[str]:
+        return self.chats.get_chats()
+
+    def get_collections(self) -> list[str]:
+        return self.db.get_collections()
+
     def create_store(self, store_name: str, files: list[str]):
         self.db.create_store(store_name, files)

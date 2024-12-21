@@ -19,6 +19,13 @@ class ChatRepository(Protocol):
         """
         return []
 
+    def get_chats(self) -> list[str]:
+        """
+            Returns the IDs of all chats currently stored.
+            # TODO: could add a feature later to return only the chats associated with a given user
+        """
+        return []
+
     def store_in_chat(self, chat_id: str, role: str, input: str):
         """
             Stores the user_input and response in the chat referenced by chat_id
@@ -45,7 +52,10 @@ class LocalRepository:
         if not chat:
             self.chats[chat_id] = []
         self.chats[chat_id].append({"role": role, "content": input})
-    
+
+    def get_chats(self) -> list[str]:
+        return self.chats.keys()
+
     def store_batch(self, chat_id: str, entries: list[dict[str, str]]):
         for entry in entries:
             self.store_in_chat(chat_id, entry.get("role", "unknown"), entry.get("content", ""))
