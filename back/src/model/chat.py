@@ -54,7 +54,7 @@ class LocalRepository:
         self.chats[chat_id].append({"role": role, "content": input})
 
     def get_chats(self) -> list[str]:
-        return self.chats.keys()
+        return list(self.chats.keys())
 
     def store_batch(self, chat_id: str, entries: list[dict[str, str]]):
         for entry in entries:

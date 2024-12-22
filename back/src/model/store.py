@@ -10,7 +10,13 @@ class Store(Protocol):
             If the store is already created, it is deleted and created once more
         """
         pass
-        
+
+    def add_to_store(self, store_name: str, file_names: list[str]):
+        """
+            Adds the given files to the corresponding store
+        """
+        pass
+
     def get_collections(self) -> list[str]:
         """
             Returns the collections stored in memory
@@ -79,6 +85,9 @@ class ChromaLocalStore:
         except:
             self.db.delete_collection(name=store_name)
             self.db.create_collection(name=store_name)
+        self.add_to_store(store_name, file_names)
+   
+    def add_to_store(self, store_name: str, file_names: list[str]):
         collection = self.db.get_collection(name=store_name)
         data, embeddings = self.__embed_chunks(
                 self.__produce_blobs(
@@ -88,7 +97,7 @@ class ChromaLocalStore:
                     )
                 )
         collection.add(ids=list(map(lambda x: str(x), range(1, len(data)+1))), embeddings=embeddings, documents=data) #type: ignore
-    
+
     def create_from_documents(self, store_name: str, files: dict[str, str]):
        pass 
     

@@ -56,6 +56,7 @@ def walk_directory(directory: str) -> list[str]:
 def search_for(query: Annotated[Chat, Body()]):
     return provider.search_for(query)
 
+# TODO: Change into "create_store"
 @app.post("/completion/start")
 def start_queried_chat(dir: Annotated[ChatInitialization, Body()]):
     files = walk_directory(dir.directory)
@@ -80,24 +81,27 @@ def add_directory(store: Annotated[str, Path()], dir: Annotated[FileInput, Body(
     """
         Adds all files in the given directory into the given store
     """
-    pass
+    files = walk_directory(dir.name)
+    provider.add_to_store(store, files)
 
 @app.post("/store/{store}/file")
 def add_file(store: Annotated[str, Path()], file: Annotated[FileInput, Body()]):
     """
         Add the given file into the given store
     """ 
-    pass
+    provider.add_to_store(store, [file.name]) 
 
-
+# TODO: Try to find the way to retrieve the most similar files
 @app.post("/similar")
 def search_similar(query: Annotated[CollectionQuery, Body()]):
     return provider.db.search(query.collection, query.input) 
 
+# TODO: Create two different endpoints; 1- To just start it, 2- To read a directory and start it
 @app.post("/collection")
 def create_collection(query: Annotated[CollectionInput, Body()]):
     provider.create_store(query.collection, query.file_names)
 
+# TODO: Should just deleted when the time comes
 @app.post("/embed")
 def embed_text(query: Annotated[TextInput, Body(alias="input")]):
     return provider.embed(query.input)

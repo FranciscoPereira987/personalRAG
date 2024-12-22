@@ -88,6 +88,9 @@ class LocalProvider:
 
     def get_collections(self) -> list[str]:
         return self.db.get_collections()
+    
+    def add_to_store(self, store_name: str, files: list[str]):
+        self.db.add_to_store(store_name, files)
 
     def create_store(self, store_name: str, files: list[str]):
         self.db.create_store(store_name, files)
