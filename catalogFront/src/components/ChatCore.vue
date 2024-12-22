@@ -31,7 +31,8 @@ const chatPlaceHolder = ref([])
         <div v-html="marked(message.content)"></div>
     </v-text-field>
    </div> 
-    <v-text-field 
+    <v-text-field
+        class="new-message" 
         label="New Message" 
         prepend-icon="mdi-chat-plus-outline" 
         append-icon="mdi-send" 
@@ -39,3 +40,11 @@ const chatPlaceHolder = ref([])
         @click:append="printClick">
     </v-text-field>
 </template>
+
+
+<style>
+    .new-message {
+        max-height: 10%;
+        align-self: end;
+    }
+</style>
