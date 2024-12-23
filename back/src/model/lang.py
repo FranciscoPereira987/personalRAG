@@ -52,9 +52,10 @@ class LocalProvider:
     def __base_story(self) -> list[dict[str, str]]:
         return [self.prompter.base_prompt()]
 
-    def __req_dic(self, query: str, store: str | None, chat_id: Optional[str]) -> dict[str, Any]:
+    def __req_dic(self, query: str, store: str, chat_id: Optional[str]) -> dict[str, Any]:
         chat_story = self.chats.get_chat(chat_id) if chat_id is not None else self.__base_story()  
         chat_story += self.prompter.generate_prompt(query, store, self.db) if store != '' else self.prompter.generate_basic(query)
+        print(chat_story)
         return {
                     "model": self.model,
                     "messages": chat_story, 
@@ -85,6 +86,9 @@ class LocalProvider:
 
     def get_chats(self) -> list[str]:
         return self.chats.get_chats()
+    
+    def get_chat(self, chat: str) -> list[dict[str, str]]:
+        return self.chats.get_chat(chat)
 
     def get_collections(self) -> list[str]:
         return self.db.get_collections()

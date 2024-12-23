@@ -18,9 +18,9 @@ let loadStores = async () => {
 
 onMounted(loadStores)
 
-let resetChat = () => {
-    console.log("Resetting Chat")
+let resetChat = async () => {
     chat.value = ""
+    await loadStores()
 }
 
 </script>
@@ -63,6 +63,8 @@ let resetChat = () => {
     .main-div {
         display: flex;
         flex-direction: column;
+        position: sticky;
+        top: 0px;
         width: 20%;
         height: 100vh;
     }

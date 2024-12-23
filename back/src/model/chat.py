@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class Chat(BaseModel):
     #Works as an identifier to the datastore that the user wants to use for this particular chat
-    store: Optional[str] = None
+    store: str = "" 
     #ID for chat history
     chat_id: Optional[str] = None
     #User input
@@ -43,8 +43,13 @@ class LocalRepository:
         self.chats: dict[str, list[dict[str, str]]] = {}
 
     def get_chat(self, chat_id: str) -> list[dict[str, str]]:
-        #Returns the chat till this moment
-        return self.chats.get(chat_id, [])
+        chat = self.chats.get(chat_id, [])
+        return list(
+                filter(
+                    lambda x: x['role'] != "system",
+                    chat
+                    )
+                )
 
     def store_in_chat(self, chat_id: str, role: str, input: str):
         chat = self.get_chat(chat_id)

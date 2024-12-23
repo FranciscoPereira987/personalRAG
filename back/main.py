@@ -9,7 +9,7 @@ from src.model.lang import LocalProvider
 from fastapi.middleware.cors import CORSMiddleware
 
 app = fastapi.FastAPI()
-provider = LocalProvider(store_location="C:\\Users\\franc\\chroma\\personalRag")
+provider = LocalProvider(store_location="/home/franciscopereira/chromadb")
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,9 +31,9 @@ class CollectionInput(BaseModel):
     collection: str
     file_names: list[str]
 
-class ChatInitialization(BaseModel):
-    directory: str
-    chat_name: str
+class StorePathInitialization(BaseModel):
+    store_name: str
+    store_path: str
 
 class FileInput(BaseModel):
     name: str
@@ -57,11 +57,9 @@ def walk_directory(directory: str) -> list[str]:
 def search_for(query: Annotated[Chat, Body()]):
     return provider.search_for(query)
 
-# TODO: Change into "create_store"
-@app.post("/completion/start")
-def start_queried_chat(dir: Annotated[ChatInitialization, Body()]):
-    files = walk_directory(dir.directory)
-    provider.create_store(dir.chat_name, files) 
+@app.get("/chats/{chat_id}")
+def get_chat_history(chat_id: Annotated[str, Path()]):
+    return provider.get_chat(chat_id)
 
 @app.get("/chats")
 def query_chats() -> list[str]:
@@ -69,6 +67,11 @@ def query_chats() -> list[str]:
         Returns all chat's id stored
     """
     return provider.get_chats() 
+
+@app.post("/stores")
+def start_queried_chat(dir: Annotated[StorePathInitialization, Body()]):
+    files = walk_directory(dir.store_path)
+    provider.create_store(dir.store_name, files) 
 
 @app.get("/stores")
 def query_stores() -> list[str]:

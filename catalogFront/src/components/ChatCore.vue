@@ -6,37 +6,42 @@ const store = defineModel("store")
 const chat = defineModel("chat") 
 const input = ref('') 
 const chatPlaceHolder = defineModel("chat-history")
+const loading = ref(false)
 
 const printClick = async () => {
    if (input.value != ''){
-       chatPlaceHolder.value.push(
+        loading.value = true
+        chatPlaceHolder.value.push(
             {"role": "user", "content": input.value})
-        let response = await postCompletion(chat.value == '' ? null : chat.value, store.value, input.value)
+        let request = postCompletion(chat.value == '' ? null : chat.value, store.value, input.value)
+        input.value = ''
+        let response = await request
         if (chat.value == '') {
             chat.value = response.id
         }
         chatPlaceHolder.value.push(
             response.choices[0].message
         )
-       input.value = '' 
    }
+   loading.value = false 
 }
-
 </script>
 
 <template>
     <div class="main-chat-core-div">
             <div v-for="message in chatPlaceHolder">
-                <v-text-field disabled=true :prepend-icon="message.role == 'assistant' ? 'mdi-robot-outline' : 'mdi-chat-outline'">
+                <v-text-field :disabled="true" :prepend-icon="message.role == 'assistant' ? 'mdi-robot-outline' : 'mdi-chat-outline'">
                     <div v-html="marked(message.content)"></div>
                 </v-text-field>
             </div>  
         <v-text-field
             class="new-message" 
-            label="New Message" 
+            label="New Message"
+            :loading="loading" 
             prepend-icon="mdi-chat-plus-outline" 
             append-icon="mdi-send" 
             v-model="input"
+            @keydown.enter="printClick"
             @click:append="printClick">
         </v-text-field>
     </div>
@@ -54,5 +59,7 @@ const printClick = async () => {
     .new-message {
         max-height: 10%;
         margin-top: auto;
+        position: sticky;
+        bottom: 0px;
     }
 </style>
