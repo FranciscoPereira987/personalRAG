@@ -52,7 +52,6 @@ def walk_directory(directory: str) -> list[str]:
             files += walk_directory(path)
     return files
 
-# TODO: Build A way to create a chat based on a random name the user gives.
 @app.post("/completion")
 def search_for(query: Annotated[Chat, Body()]):
     return provider.search_for(query)
@@ -76,6 +75,14 @@ def query_chats() -> list[str]:
 def start_queried_chat(dir: Annotated[StorePathInitialization, Body()]):
     files = walk_directory(dir.store_path)
     provider.create_store(dir.store_name, files) 
+
+@app.post("/stores/directory/{store_id}")
+def add_directory_to_store(store_id: Annotated[str, Path()], dir: Annotated[FileInput, Body()]):
+    return
+
+@app.post("/stores/file/{store_id}")
+def add_file_to_store(store_id: Annotated[str, Path()], file: Annotated[FileInput, Body()]):
+    return
 
 @app.get("/stores")
 def query_stores() -> list[str]:
@@ -109,7 +116,7 @@ def search_similar(query: Annotated[CollectionQuery, Body()]):
 def create_collection(query: Annotated[CollectionInput, Body()]):
     provider.create_store(query.collection, query.file_names)
 
-# TODO: Should just deleted when the time comes
+# TODO: Should just delete it when the time comes
 @app.post("/embed")
 def embed_text(query: Annotated[TextInput, Body(alias="input")]):
     return provider.embed(query.input)
