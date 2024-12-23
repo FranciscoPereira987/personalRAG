@@ -61,6 +61,10 @@ def search_for(query: Annotated[Chat, Body()]):
 def get_chat_history(chat_id: Annotated[str, Path()]):
     return provider.get_chat(chat_id)
 
+@app.post("/chats/{chat_id}")
+def create_new_chat(chat_id: Annotated[str, Path()]):
+    provider.create_new_chat(chat_id) 
+
 @app.get("/chats")
 def query_chats() -> list[str]:
     """

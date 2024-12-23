@@ -55,7 +55,6 @@ class LocalProvider:
     def __req_dic(self, query: str, store: str, chat_id: Optional[str]) -> dict[str, Any]:
         chat_story = self.chats.get_chat(chat_id) if chat_id is not None else self.__base_story()  
         chat_story += self.prompter.generate_prompt(query, store, self.db) if store != '' else self.prompter.generate_basic(query)
-        print(chat_story)
         return {
                     "model": self.model,
                     "messages": chat_story, 
@@ -95,6 +94,9 @@ class LocalProvider:
     
     def add_to_store(self, store_name: str, files: list[str]):
         self.db.add_to_store(store_name, files)
+    
+    def create_new_chat(self, chat_id: str):
+        self.chats.create_chat(chat_id, self.__base_story())  
 
     def create_store(self, store_name: str, files: list[str]):
         self.db.create_store(store_name, files)

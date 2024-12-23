@@ -36,6 +36,10 @@ class ChatRepository(Protocol):
             Stores the whole list, where every entry should have a 'role' and a 'content'
             key
         """
+    def create_chat(self, chat_id: str, base: list[dict[str, str]]):
+        """
+            Initializes a new chat, or recreates if it already exists
+        """
 
 class LocalRepository:
 
@@ -57,6 +61,9 @@ class LocalRepository:
         if not chat:
             self.chats[chat_id] = []
         self.chats[chat_id].append({"role": role, "content": input})
+    
+    def create_chat(self, chat_id: str, base: list[dict[str, str]]):
+        self.chats[chat_id] = base
 
     def get_chats(self) -> list[str]:
         return list(self.chats.keys())

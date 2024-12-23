@@ -53,3 +53,8 @@ export async function getAvailableChats() {
     let response = await axios.get(endpoint)
     return await response.data
 }
+//Initialices a new chat
+export async function createNewChat(chatName) {
+    let endpoint = API_URL + API_CHAT_HISTORY + '/' + chatName
+    await axios.post(endpoint)
+}
