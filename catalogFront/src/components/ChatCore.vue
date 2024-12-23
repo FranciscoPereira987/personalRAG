@@ -5,6 +5,7 @@ import { marked } from 'marked';
 const store = defineModel("store")
 const chat = defineModel("chat") 
 const input = ref('') 
+const chatPlaceHolder = defineModel("chat-history")
 
 const printClick = async () => {
    if (input.value != ''){
@@ -21,13 +22,12 @@ const printClick = async () => {
    }
 }
 
-const chatPlaceHolder = ref([])
 </script>
 
 <template>
-    <div >
+    <div class="main-chat-core-div">
             <div v-for="message in chatPlaceHolder">
-                <v-text-field disabled=true :prepend-icon="message.role == 'assistant' ? 'mdi-chat' : 'mdi-chat-outline'">
+                <v-text-field disabled=true :prepend-icon="message.role == 'assistant' ? 'mdi-robot-outline' : 'mdi-chat-outline'">
                     <div v-html="marked(message.content)"></div>
                 </v-text-field>
             </div>  
@@ -44,11 +44,15 @@ const chatPlaceHolder = ref([])
 
 
 <style>
-    .main-div {
-        height: 100%
+    .main-chat-core-div {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        height: 100%;
+        margin-left: 2%
     }
     .new-message {
         max-height: 10%;
-        align-self: end;
+        margin-top: auto;
     }
 </style>

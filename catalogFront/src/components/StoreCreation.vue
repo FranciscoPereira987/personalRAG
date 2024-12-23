@@ -1,11 +1,34 @@
 <script setup>
+import { newStoreWithPath } from '@/commons/calls';
 import { ref } from 'vue';
 const isActive = defineModel("active")
 const storeName = ref('')
 const storePath = ref('')
 const isFile = ref(false)
-const logInfo = () => {
- 
+
+const nameError = ref(false)
+const pathError = ref(false)
+
+const loading = ref(false)
+
+const restartValues = () => {
+    storeName.value = ''
+    storePath.value = ''
+    loading.value = false
+    isActive = false
+}
+
+const createStore = async () => {
+    nameError.value = false
+    pathError.value = false
+    if (storeName.value == '' || storePath.value == '') {
+        nameError.value = storeName.value == ''
+        pathError.value = storePath.value == ''
+        return
+    }
+    loading.value = true
+    await newStoreWithPath(storeName.value, storePath.value)
+    restartValues()
 }
 </script>
 
@@ -14,12 +37,14 @@ const logInfo = () => {
         v-model="isActive"
         width="auto">
         <v-card
+            :loading="loading"
             class="main-card"
             title="New Store">
             <template v-slot:default>
                 <v-text-field
                     class="input-field"
                     label="Store Name"
+                    :error="nameError"
                     v-model="storeName">
                 </v-text-field>
                 <v-file-input
@@ -30,6 +55,7 @@ const logInfo = () => {
                     v-else
                     class="input-field"
                     label="Path Name"
+                    :error="pathError"
                     v-model="storePath">
                 </v-text-field>
                 <v-switch
@@ -45,7 +71,7 @@ const logInfo = () => {
                 </v-btn>
                 <v-btn
                     text="Create"
-                    @click="logInfo">
+                    @click="createStore">
                 </v-btn>
             </template>
         </v-card> 

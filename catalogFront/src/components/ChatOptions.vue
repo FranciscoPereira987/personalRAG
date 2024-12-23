@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import StoreCreation from './storeCreation.vue';
+import StoreCreation from './StoreCreation.vue';
 import { getAvailableChats, getAvailableStores } from '@/commons/calls';
 
 const storeNames = ref([])

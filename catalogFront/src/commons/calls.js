@@ -1,4 +1,3 @@
-import ChatHistory from "@/components/ChatHistory.vue"
 import axios from "axios"
 
 const API_URL = "http://127.0.0.1:8000"
@@ -30,6 +29,16 @@ export async function getAvailableStores() {
     let endpoint = API_URL + API_AVAILABLE_STORES
     let response = await axios.get(endpoint)
     return await response.data
+}
+
+export async function newStoreWithPath(name, path) {
+    const data = {
+        "store_name": name,
+        "store_path": path 
+    }
+    let endpoint = API_URL + API_AVAILABLE_STORES
+    let response = await axios.post(endpoint, data)
+    return await response.data 
 }
 
 export async function getAvailableChats() {

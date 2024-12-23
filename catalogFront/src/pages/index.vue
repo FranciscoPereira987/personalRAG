@@ -6,17 +6,21 @@ import { ref } from 'vue';
 
 const store = ref("")
 const chat = ref("")
+const chatHistory = ref([])
+
+const updateHistory = async () => {
+  console.log("Clicked")
+}
 
 </script>
 
 <template>
   <div style="display: flex; height: 100%; min-width: 100%;">
-    <ChatOptions v-model:store="store" v-model:chat="chat"/>
-    <ChatCore v-model:chat="chat" v-model:store="store"/>
-    <div>
-      <p>{{ store }}</p>
-      <p>{{ chat }}</p>
-    </div>
+    <ChatOptions v-model:store="store" v-model:chat="chat" @update:chat="updateHistory"/>
+    <ChatCore 
+      v-model:chat="chat" 
+      v-model:store="store"
+      v-model:chat-history="chatHistory"/>
   </div>
 </template>
 
