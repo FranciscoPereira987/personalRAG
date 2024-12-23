@@ -52,6 +52,7 @@ def walk_directory(directory: str) -> list[str]:
             files += walk_directory(path)
     return files
 
+# TODO: Build A way to create a chat based on a random name the user gives.
 @app.post("/completion")
 def search_for(query: Annotated[Chat, Body()]):
     return provider.search_for(query)
