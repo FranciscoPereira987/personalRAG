@@ -2,18 +2,18 @@
 import { postCompletion } from '@/commons/calls';
 import { ref } from 'vue';
 import { marked } from 'marked';
-const store = "prueba"
-const chat = ref('')
+const store = defineModel("store")
+const chat = defineModel("chat") 
 const input = ref('') 
+
 const printClick = async () => {
    if (input.value != ''){
        chatPlaceHolder.value.push(
             {"role": "user", "content": input.value})
-        let response = await postCompletion(chat.value == '' ? null : chat.value, store, input.value)
+        let response = await postCompletion(chat.value == '' ? null : chat.value, store.value, input.value)
         if (chat.value == '') {
             chat.value = response.id
         }
-        console.log(chat.value)
         chatPlaceHolder.value.push(
             response.choices[0].message
         )
@@ -22,27 +22,31 @@ const printClick = async () => {
 }
 
 const chatPlaceHolder = ref([])
-
 </script>
 
 <template>
-   <div v-for="message in chatPlaceHolder">
-    <v-text-field disabled=true :prepend-icon="message.role == 'assistant' ? 'mdi-chat' : 'mdi-chat-outline'">
-        <div v-html="marked(message.content)"></div>
-    </v-text-field>
-   </div> 
-    <v-text-field
-        class="new-message" 
-        label="New Message" 
-        prepend-icon="mdi-chat-plus-outline" 
-        append-icon="mdi-send" 
-        v-model="input"
-        @click:append="printClick">
-    </v-text-field>
+    <div >
+            <div v-for="message in chatPlaceHolder">
+                <v-text-field disabled=true :prepend-icon="message.role == 'assistant' ? 'mdi-chat' : 'mdi-chat-outline'">
+                    <div v-html="marked(message.content)"></div>
+                </v-text-field>
+            </div>  
+        <v-text-field
+            class="new-message" 
+            label="New Message" 
+            prepend-icon="mdi-chat-plus-outline" 
+            append-icon="mdi-send" 
+            v-model="input"
+            @click:append="printClick">
+        </v-text-field>
+    </div>
 </template>
 
 
 <style>
+    .main-div {
+        height: 100%
+    }
     .new-message {
         max-height: 10%;
         align-self: end;

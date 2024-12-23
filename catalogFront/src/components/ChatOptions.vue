@@ -1,10 +1,27 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import StoreCreation from './storeCreation.vue';
+import { getAvailableChats, getAvailableStores } from '@/commons/calls';
 
-const storeNames = ref(["A", "B", "C", "D"])
-const chatNames = ref(["Chat-A", "Chat-B", "Chat-C", "Chat-D"])
+const storeNames = ref([])
+const chatNames = ref([])
+const storeCreationActive = ref(false)
 const selected = defineModel("store")
 const chat = defineModel("chat")
+
+let loadStores = async () => {
+    let stores = await getAvailableStores()
+    let chats  = await getAvailableChats()
+    storeNames.value = stores
+    chatNames.value = chats
+}
+
+onMounted(loadStores)
+
+let resetChat = () => {
+    console.log("Resetting Chat")
+    chat.value = ""
+}
 
 </script>
 <!-- 
@@ -14,29 +31,32 @@ const chat = defineModel("chat")
 -->
 <template>
     <v-card class='main-div' variant="tonal">
-        <v-select 
-            class="menu-element"
-            variant="outlined"
-            label="Chat"
-            :items="chatNames"
-            v-model="chat"
-            >
-        </v-select>
-        <v-select
-            class="menu-element"
-            variant="outlined"
-            label="Store"
-            :items="storeNames"
-            v-model="selected"
-            >
-        </v-select>
-        <v-btn class="create-btn" variant="tonal">
-            New Chat
-        </v-btn>
-        <v-btn class="create-btn" variant="tonal">
-            New Store
-        </v-btn>
+        <template v-slot:default>
+                <v-select 
+                class="menu-element"
+                variant="outlined"
+                label="Chat"
+                :items="chatNames"
+                v-model="chat"
+                >
+            </v-select>
+            <v-select
+                class="menu-element"
+                variant="outlined"
+                label="Store"
+                :items="storeNames"
+                v-model="selected"
+                >
+            </v-select>
+            <v-btn class="create-btn last-btn" variant="tonal" @click="resetChat">
+                New Chat
+            </v-btn>
+            <v-btn class="create-btn not-last-btn" variant="tonal" @click="storeCreationActive = true">
+                New Store
+            </v-btn>
+        </template>
     </v-card>
+    <StoreCreation v-model:active="storeCreationActive"/>
 </template>
 
 <style>
@@ -47,16 +67,21 @@ const chat = defineModel("chat")
         height: 100vh;
     }
     .menu-element {
+        max-height: 10%;
         margin-top: 2%;
         margin-left: 1%;
         margin-right: 1%;
     }
     .create-btn {
-         
         width: 98%;
         margin-bottom: 2%;
-        margin-top: 2%;
         margin-left: 1%;
         margin-right: 1%; 
+    }
+    .last-btn {
+        margin-top: auto;
+    }
+    .not-last-btn {
+        margin-top: 2%;
     }
 </style>

@@ -3,7 +3,8 @@ import axios from "axios"
 
 const API_URL = "http://127.0.0.1:8000"
 const API_CHAT_COMPLETION = "/completion"
-const API_CHAT_HISTORY = "/history"
+const API_CHAT_HISTORY = "/chats"
+const API_AVAILABLE_STORES = "/stores"
 
 function ChatData(chat, store, input) {
     let basicData = {
@@ -25,6 +26,14 @@ export async function postCompletion(chat, store, input) {
     return await response.data 
 }
 
-export async function getChatHistory(chat) {
+export async function getAvailableStores() {
+    let endpoint = API_URL + API_AVAILABLE_STORES
+    let response = await axios.get(endpoint)
+    return await response.data
+}
 
+export async function getAvailableChats() {
+    let endpoint = API_URL + API_CHAT_HISTORY
+    let response = await axios.get(endpoint)
+    return await response.data
 }
