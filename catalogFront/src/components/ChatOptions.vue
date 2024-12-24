@@ -3,11 +3,13 @@ import { onMounted, ref } from 'vue';
 import StoreCreation from './StoreCreation.vue';
 import ChatCreation from './ChatCreation.vue';
 import { getAvailableChats, getAvailableStores } from '@/commons/calls';
+import StoreUpdate from './StoreUpdate.vue';
 
 const storeNames = ref([])
 const chatNames = ref([])
 const storeCreationActive = ref(false)
 const newChatCreationActive = ref(false)
+const storeUpdateActive = ref(false)
 const selected = defineModel("store")
 const chat = defineModel("chat")
 
@@ -51,6 +53,13 @@ let resetChat = async () => {
                 v-model="selected"
                 >
             </v-select>
+            <v-btn
+                class="create-btn" 
+                v-if="selected != ''"
+                @click="storeUpdateActive = true"
+                >
+                Update Store
+            </v-btn>
             <v-btn 
                 class="create-btn last-btn" 
                 variant="tonal" 
@@ -69,6 +78,7 @@ let resetChat = async () => {
         v-model:active="newChatCreationActive" 
         v-model:chat="chat"/>
     <StoreCreation v-model:active="storeCreationActive"/>
+    <StoreUpdate v-model:active="storeUpdateActive" :store="selected"/>
 </template>
 
 <style>

@@ -58,3 +58,11 @@ export async function createNewChat(chatName) {
     let endpoint = API_URL + API_CHAT_HISTORY + '/' + chatName
     await axios.post(endpoint)
 }
+//Call to update a store based on a dir
+export async function updateStoreWithDir(store, dir) {
+    let endpoint = API_URL + API_AVAILABLE_STORES + "/directory/" + store
+    let data = {
+        "name": dir
+    }
+    await axios.post(endpoint, data)
+}
