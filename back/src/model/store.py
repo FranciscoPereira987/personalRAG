@@ -1,4 +1,6 @@
 from typing import Protocol, Tuple
+from uuid import uuid1
+import uuid
 import chromadb
 from src.model.embed import Embedder, LocalEmbedder
 
@@ -96,7 +98,8 @@ class ChromaLocalStore:
                         )
                     )
                 )
-        collection.add(ids=list(map(lambda x: str(x), range(1, len(data)+1))), embeddings=embeddings, documents=data) #type: ignore
+        starting = collection.count()        
+        collection.add(ids=[str(i) for i in range(starting, starting+len(data))], embeddings=embeddings, documents=data) #type: ignore
 
     def create_from_documents(self, store_name: str, files: dict[str, str]):
        pass 

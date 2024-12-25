@@ -78,6 +78,8 @@ def start_queried_chat(dir: Annotated[StorePathInitialization, Body()]):
 
 @app.post("/stores/directory/{store_id}")
 def add_directory_to_store(store_id: Annotated[str, Path()], dir: Annotated[FileInput, Body()]):
+    files = walk_directory(dir.name)
+    provider.add_to_store(store_id, files)
     return
 
 @app.post("/stores/file/{store_id}")
