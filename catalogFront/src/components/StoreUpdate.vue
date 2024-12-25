@@ -10,7 +10,7 @@ const nameError = ref(false)
 const props = defineProps(["store"])
 
 
-const updateDyrectory = async () => {
+const updateDirectory = async () => {
     nameError.value = dir.value == ""
     if (dir.value == "") {
         return    
@@ -46,7 +46,8 @@ const updateFile = async () => {
                     class="input-field"
                     label="Path Name"
                     :error="nameError"
-                    v-model="dir">
+                    v-model="dir"
+                    @keydown.enter="updateDirectory">
                 </v-text-field>
                 <v-switch
                     label="Upload file"
@@ -61,7 +62,8 @@ const updateFile = async () => {
                 </v-btn>
                 <v-btn
                     text="Add to store"
-                    @click="updateDyrectory">
+                    @click="updateDirectory"
+                    >
                 </v-btn>
             </template>
         </v-card> 

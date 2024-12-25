@@ -77,8 +77,11 @@ let resetChat = async () => {
     <ChatCreation 
         v-model:active="newChatCreationActive" 
         v-model:chat="chat"/>
-    <StoreCreation v-model:active="storeCreationActive"/>
-    <StoreUpdate v-model:active="storeUpdateActive" :store="selected"/>
+    <StoreCreation 
+        v-model:active="storeCreationActive"/>
+    <StoreUpdate 
+        v-model:active="storeUpdateActive" 
+        :store="selected"/>
 </template>
 
 <style>

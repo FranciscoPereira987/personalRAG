@@ -37,7 +37,8 @@ const createChat = async () => {
                     class="input-field"
                     label="Chat Name"
                     :error="nameError"
-                    v-model="newChatName">
+                    v-model="newChatName"
+                    @keydown.enter="createChat">
                 </v-text-field>
             </template>
             <template v-slot:actions>
