@@ -5,6 +5,7 @@ from fastapi.param_functions import Body
 from fastapi.params import Path
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
+from back.src.model.embed import LocalEmbedder
 from src.model.chat import Chat
 from src.model.lang import LocalProvider
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +21,9 @@ class Settings(BaseSettings):
 
 settings = Settings()
 app = fastapi.FastAPI()
+embedder = LocalEmbedder(settings.service_addr, settings.service_port, settings.embed_model)
 provider = LocalProvider(
+   embedder=embedder,
    llm_service=settings.service_addr,
    port=settings.service_port,
    model=settings.model,

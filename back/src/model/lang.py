@@ -34,20 +34,23 @@ class BedrockProvider:
 class LocalProvider:
 
     def __init__(self,
+                 embedder: Embedder,
+                 repository: ChatRepository = LocalRepository(),
                  llm_service: str = "http://127.0.0.1",
                  port: str = "1234",
                  model: str = "llama-3.2-3b-instruct",
-                 embed_model: str = "text-embedding-nomic-embed-text-v1.5",
                  temperature: float = 0.7,
                  max_tokens: int = -1,
-                 store_location: str = "."):
+                 store_location: str = ".",
+                 prompter: PromptBuilder = BasicPrompt()
+                 ):
         self.conn_string = f"{llm_service}:{port}"
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
-        self.chats: ChatRepository = LocalRepository()
-        self.embedder: Embedder = LocalEmbedder(conn=llm_service, port=port, model=embed_model)
-        self.prompter: PromptBuilder = BasicPrompt()
+        self.chats: ChatRepository = repository 
+        self.embedder: Embedder = embedder
+        self.prompter: PromptBuilder = prompter 
         self.db: Store = ChromaLocalStore(store_location) 
 
     def __base_story(self) -> list[dict[str, str]]:
