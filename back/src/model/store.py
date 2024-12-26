@@ -99,7 +99,7 @@ class ChromaLocalStore:
                     )
                 )
         starting = collection.count()        
-        collection.add(ids=[str(i) for i in range(starting, starting+len(data))], embeddings=embeddings, documents=data) #type: ignore
+        collection.add(ids=[str(i) for i in range(starting+1, starting+len(data)+1)], embeddings=embeddings, documents=data) #type: ignore
 
     def create_from_documents(self, store_name: str, files: dict[str, str]):
        pass 

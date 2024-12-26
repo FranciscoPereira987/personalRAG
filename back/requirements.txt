@@ -1,3 +1,4 @@
 fastapi
 chromadb
 docx2md
+pydantic_settings

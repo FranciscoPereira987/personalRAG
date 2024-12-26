@@ -7,9 +7,14 @@ const chat = defineModel("chat")
 const input = ref('') 
 const chatPlaceHolder = defineModel("chat-history")
 const loading = ref(false)
+const chatError = ref(false)
 
-const printClick = async () => {
-   if (input.value != ''){
+const sendChatMessage = async () => {
+    if (chat.value == "") {
+        chatError.value = true        
+        return
+    }
+    if (input.value != ''){
         loading.value = true
         chatPlaceHolder.value.push(
             {"role": "user", "content": input.value})
@@ -36,13 +41,14 @@ const printClick = async () => {
             </div>  
         <v-text-field
             class="new-message" 
-            label="New Message"
+            :label="chatError ? 'No chat' : 'New Message'"
             :loading="loading" 
+            :error="chatError"
             prepend-icon="mdi-chat-plus-outline" 
             append-icon="mdi-send" 
             v-model="input"
-            @keydown.enter="printClick"
-            @click:append="printClick">
+            @keydown.enter="sendChatMessage"
+            @click:append="sendChatMessage">
         </v-text-field>
     </div>
 </template>

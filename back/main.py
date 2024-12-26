@@ -4,12 +4,31 @@ import fastapi
 from fastapi.param_functions import Body
 from fastapi.params import Path
 from pydantic import BaseModel
+from pydantic_settings import BaseSettings
 from src.model.chat import Chat
 from src.model.lang import LocalProvider
 from fastapi.middleware.cors import CORSMiddleware
 
+class Settings(BaseSettings):
+    chroma_location: str = "/home/franciscopereira/chromadb"
+    service_addr: str = "http://127.0.0.1"
+    service_port: str = "1234"
+    model: str = "llama-3.2-3b-instruct"
+    embed_model: str = "text-embedding-nomic-embed-text-v1.5"
+    temperature: float = 0.7
+    max_tokens: int = -1
+
+settings = Settings()
 app = fastapi.FastAPI()
-provider = LocalProvider(store_location="/home/franciscopereira/chromadb")
+provider = LocalProvider(
+   llm_service=settings.service_addr,
+   port=settings.service_port,
+   model=settings.model,
+   embed_model=settings.embed_model,
+   temperature=settings.temperature,
+   max_tokens=settings.max_tokens,
+   store_location=settings.chroma_location 
+)
 
 app.add_middleware(
     CORSMiddleware,
